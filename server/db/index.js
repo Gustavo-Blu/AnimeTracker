@@ -37,4 +37,5 @@ module.exports = {
   Artist,
   Show,
   Song,
+  Playlist,
 };

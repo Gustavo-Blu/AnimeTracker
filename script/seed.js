@@ -1,6 +1,11 @@
 'use strict';
 
-const { db, User } = require('../server/db');
+const { db, User, Artist, Song, Show, Playlist } = require('../server/db');
+const allUsers = require('./userData');
+const allArtists = require('./artistData');
+const allSongs = require('./songData');
+const allShows = require('./showData');
+const allPlaylists = require('./playlistData');
 
 /**
  * seed - this function clears the database, updates tables to
@@ -11,18 +16,117 @@ async function seed() {
   console.log('db synced!');
 
   // Creating Users
-  const users = await Promise.all([
-    User.create({ username: 'cody', password: '123' }),
-    User.create({ username: 'murphy', password: '123' }),
-  ]);
+  // const users = await Promise.all([
+  //   User.create({ username: 'cody', password: '123' }),
+  //   User.create({ username: 'murphy', password: '123' }),
+  // ]);
+  let users = {};
+  let artists = {};
+  let songs = {};
+  let shows = {};
+  let playlists = {};
 
-  console.log(`seeded ${users.length} users`);
+  for (let key in allUsers) {
+    users[key] = await User.create(allUsers[key]);
+  }
+  for (let key in allArtists) {
+    artists[key] = await Artist.create(allArtists[key]);
+  }
+  for (let key in allSongs) {
+    songs[key] = await Song.create(allSongs[key]);
+  }
+  for (let key in allShows) {
+    shows[key] = await Show.create(allShows[key]);
+  }
+  for (let key in allPlaylists) {
+    playlists[key] = await Playlist.create(allPlaylists[key]);
+  }
+
+  // console.log(users);
+
+  //user associations
+  users.Gus.setArtists(Object.values(artists));
+  users.Gus.setSongs(Object.values(songs));
+  users.Gus.setShows(Object.values(shows));
+  users.Gus.setPlaylists(Object.values(playlists));
+
+  //shows associations
+  shows.fmab.setSongs([
+    songs.again,
+    songs.hologram,
+    songs.goldenTimeLover,
+    songs.uso,
+    songs.letItOut,
+    songs.tsunaideTe,
+  ]);
+  shows.flcl.setSongs([
+    songs.oneLife,
+    songs.instantMusic,
+    songs.happyBivouac,
+    songs.runnersHigh,
+    songs.carnival,
+    songs.rideOnAShootingStar,
+  ]);
+  shows.progressive.setSongs([songs.spikySeeds]);
+  shows.alternative.setSongs([songs.starOverhead]);
+  shows.kingsGame.setSongs([songs.feedTheFire, songs.lostParadise]);
+
+  //artist associations
+  artists.thePillows.setSongs([
+    songs.oneLife,
+    songs.instantMusic,
+    songs.happyBivouac,
+    songs.runnersHigh,
+    songs.carnival,
+    songs.rideOnAShootingStar,
+    songs.spikySeeds,
+    songs.starOverhead,
+  ]);
+  artists.coldrain.setSongs([songs.feedTheFire]);
+  artists.yui.setSongs([songs.again]);
+  artists.nicoTouchesTheWalls.setSongs([songs.hologram]);
+  artists.sukimaSwitch.setSongs([songs.goldenTimeLover]);
+  artists.sid.setSongs([songs.uso]);
+  artists.mihoFukuhara.setSongs([songs.letItOut]);
+  artists.lilB.setSongs([songs.tsunaideTe]);
+  artists.pile.setSongs([songs.lostParadise]);
+
+  //playlist associations
+  playlists.openings.setSongs([
+    songs.again,
+    songs.hologram,
+    songs.goldenTimeLover,
+    songs.oneLife,
+    songs.instantMusic,
+    songs.happyBivouac,
+    songs.runnersHigh,
+    songs.carnival,
+    songs.feedTheFire,
+  ]);
+  playlists.endings.setSongs([
+    songs.uso,
+    songs.letItOut,
+    songs.tsunaideTe,
+    songs.rideOnAShootingStar,
+    songs.spikySeeds,
+    songs.starOverhead,
+    songs.lostParadise,
+  ]);
+  playlists.allSongs.setSongs(Object.values(songs));
+
+  console.log(`seeded users`);
+  console.log(`seeded artists`);
+  console.log(`seeded songs`);
+  console.log(`seeded shows`);
+  console.log(`seeded playlists`);
   console.log(`seeded successfully`);
+
   return {
-    users: {
-      cody: users[0],
-      murphy: users[1],
-    },
+    users,
+    artists,
+    songs,
+    shows,
+    playlists,
   };
 }
 

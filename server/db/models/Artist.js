@@ -4,7 +4,6 @@ const db = require('../db');
 const Artist = db.define('artist', {
   name: {
     type: Sequelize.STRING,
-    unique: true,
     defaultValue: 'unknown',
   },
   isFav: {

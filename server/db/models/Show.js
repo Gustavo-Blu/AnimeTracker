@@ -4,7 +4,6 @@ const db = require('../db');
 const Show = db.define('show', {
   title: {
     type: Sequelize.STRING,
-    unique: true,
     allowNull: false,
     validate: {
       notEmpty: true,
@@ -58,6 +57,12 @@ const Show = db.define('show', {
     allowNull: false,
     validate: {
       notEmpty: true,
+    },
+  },
+  isCompleted: {
+    type: Sequelize.VIRTUAL,
+    get() {
+      return this.episodeTotal === this.currentEp;
     },
   },
 });

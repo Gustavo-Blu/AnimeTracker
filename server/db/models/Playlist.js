@@ -5,7 +5,6 @@ const Playlist = db.define('playlist', {
   title: {
     type: Sequelize.STRING,
     allowNull: false,
-    unique: true,
     validate: {
       notEmpty: true,
     },
