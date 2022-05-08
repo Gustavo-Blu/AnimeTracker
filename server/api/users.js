@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { Op } = require('sequelize');
 const { User, Artist, Song, Show, Playlist } = require('../db');
 const { requireToken, isAdmin } = require('./gateKeepingMiddleware');
 module.exports = router;
@@ -6,13 +7,69 @@ module.exports = router;
 router.get('/', requireToken, isAdmin, async (req, res, next) => {
   try {
     const users = await User.findAll({
-      // explicitly select only the id and username fields - even though
-      // users' passwords are encrypted, it won't help if we just
-      // send everything to anyone who asks!
-      attributes: ['id', 'username', 'email'],
+      attributes: ['id', 'username', 'email', 'imageUrl'],
     });
     res.json(users);
   } catch (err) {
     next(err);
+  }
+});
+
+router.post('/', requireToken, isAdmin, async (req, res, next) => {
+  try {
+    const [user, isCreated] = await User.findOrCreate({
+      where: {
+        [Op.or]: [{ email: req.body.email }, { username: req.body.username }],
+      },
+      defaults: req.body,
+    });
+
+    if (!isCreated) {
+      const err = new Error(
+        req.body.email === user.email
+          ? 'email already exists'
+          : 'username already exists'
+      );
+      err.status = 401;
+      throw err;
+    }
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put('/:id', requireToken, async (req, res, next) => {
+  try {
+    if (req.user.isAdmin) {
+      const user = await User.findByPk(req.params.id);
+
+      if (!user) return next();
+
+      await user.update(req.body);
+      res.json(user);
+    } else {
+      const user = await User.findByPk(req.user.id);
+
+      if (!user) return next();
+
+      await user.update(req.body);
+      res.json(user);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/:id', requireToken, isAdmin, async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+
+    if (!user) return next();
+
+    res.json(user);
+  } catch (error) {
+    next(error);
   }
 });
