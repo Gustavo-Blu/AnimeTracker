@@ -8,6 +8,19 @@ router.get('/', requireToken, isAdmin, async (req, res, next) => {
   try {
     const users = await User.findAll({
       attributes: ['id', 'username', 'email', 'imageUrl'],
+      include: [
+        { model: Artist },
+        { model: Show },
+        { model: Song },
+        { model: Playlist },
+      ],
+      order: [
+        ['id', 'ASC'],
+        [Artist, 'id', 'ASC'],
+        [Show, 'id', 'ASC'],
+        [Song, 'id', 'ASC'],
+        [Playlist, 'id', 'ASC'],
+      ],
     });
     res.json(users);
   } catch (err) {
@@ -43,14 +56,42 @@ router.post('/', requireToken, isAdmin, async (req, res, next) => {
 router.put('/:id', requireToken, async (req, res, next) => {
   try {
     if (req.user.isAdmin) {
-      const user = await User.findByPk(req.params.id);
+      const user = await User.findByPk(req.params.id, {
+        include: [
+          { model: Artist },
+          { model: Show },
+          { model: Song },
+          { model: Playlist },
+        ],
+        order: [
+          ['id', 'ASC'],
+          [Artist, 'id', 'ASC'],
+          [Show, 'id', 'ASC'],
+          [Song, 'id', 'ASC'],
+          [Playlist, 'id', 'ASC'],
+        ],
+      });
 
       if (!user) return next();
 
       await user.update(req.body);
       res.json(user);
     } else {
-      const user = await User.findByPk(req.user.id);
+      const user = await User.findByPk(req.user.id, {
+        include: [
+          { model: Artist },
+          { model: Show },
+          { model: Song },
+          { model: Playlist },
+        ],
+        order: [
+          ['id', 'ASC'],
+          [Artist, 'id', 'ASC'],
+          [Show, 'id', 'ASC'],
+          [Song, 'id', 'ASC'],
+          [Playlist, 'id', 'ASC'],
+        ],
+      });
 
       if (!user) return next();
 
