@@ -5,6 +5,11 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const sequelize = require('sequelize');
 
+const Artist = require('./Artist');
+const Show = require('./Show');
+const Song = require('./Song');
+const Playlist = require('./Playlist');
+
 const SALT_ROUNDS = 5;
 
 const User = db.define('user', {
@@ -69,7 +74,27 @@ User.authenticate = async function ({ username, password, eamil }) {
 User.findByToken = async function (token) {
   try {
     const { id } = await jwt.verify(token, process.env.JWT);
-    const user = User.findByPk(id);
+    const user = User.findByPk(id, {
+      attributes: ['id', 'username', 'email', 'imageUrl'],
+      include: [
+        { model: Artist },
+        { model: Show },
+        {
+          model: Song,
+          include: {
+            model: Artist,
+          },
+        },
+        { model: Playlist },
+      ],
+      order: [
+        ['id', 'ASC'],
+        [Artist, 'id', 'ASC'],
+        [Show, 'id', 'ASC'],
+        [Song, 'id', 'ASC'],
+        [Playlist, 'id', 'ASC'],
+      ],
+    });
     if (!user) {
       throw 'nooo';
     }

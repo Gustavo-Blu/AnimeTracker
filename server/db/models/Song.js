@@ -43,7 +43,7 @@ const Song = db.define('song', {
   imageUrl: {
     type: Sequelize.STRING,
     defaultValue:
-      'https://yt3.ggpht.com/8cd9vG0u0Mxe53OFiFIpfR8SSKS5FPSAHgMyJN3szWc08bYMHHctXc6DGGDGdy7j59Ia6dnP7WE=s900-c-k-c0x00ffffff-no-rj',
+      'https://www.kindpng.com/picc/m/7-77504_music-notes-png-transparent-music-note-clipart-png.png',
   },
 });
 
