@@ -11,7 +11,7 @@ export const HomePage = (props) => {
 
   console.log(props.auth);
   return (
-    <div>
+    <div className="body">
       <h3>Welcome, {username}</h3>
 
       <div id="allShows">

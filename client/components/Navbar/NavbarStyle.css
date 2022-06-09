@@ -1,0 +1,14 @@
+#main {
+  display: flex;
+  position: absolute;
+  top: 0;
+  width: 80%;
+  margin-left: calc((100% - 80%) / 2);
+}
+
+h1 {
+  flex: 2 0 0;
+}
+
+#links {
+}
