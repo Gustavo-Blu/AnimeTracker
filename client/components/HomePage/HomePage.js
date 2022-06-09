@@ -5,7 +5,7 @@ import './HomePageStyle.css';
 /**
  * COMPONENT
  */
-export const HomePage = (props) => {
+const HomePage = (props) => {
   const { username } = props;
   const { songs, artists, shows, playlists } = props.auth;
 
@@ -46,6 +46,7 @@ export const HomePage = (props) => {
         <table>
           <thead>
             <tr>
+              <th />
               <th>#</th>
               <th>Title</th>
               <th>Artist</th>
@@ -56,6 +57,9 @@ export const HomePage = (props) => {
             {songs.map((song, index) => {
               return (
                 <tr key={song.id}>
+                  <td>
+                    <i className="fa fa-play-circle" />
+                  </td>
                   <td className="songNum">{index + 1}</td>
                   <td>{song.title}</td>
                   <td>{song.artists[0].name}</td>
