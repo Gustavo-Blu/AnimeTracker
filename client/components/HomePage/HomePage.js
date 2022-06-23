@@ -1,87 +1,64 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import './HomePageStyle.css';
+import Carousel from 'react-bootstrap/Carousel';
 
-/**
- * COMPONENT
- */
 const HomePage = (props) => {
-  const { username } = props;
-  const { songs, artists, shows, playlists } = props.auth;
+  const { username, shows } = useSelector((state) => state.auth);
+  console.log(shows[0]);
 
-  console.log(props.auth);
   return (
     <div className="body">
-      <h3>Welcome, {username}</h3>
-
-      <div id="allShows">
-        <h2>All Shows: </h2>
-        {shows[0] ? (
-          shows.map((show) => {
-            return (
-              <div key={show.id} className="show">
-                <h4>{show.title}</h4>
-                <img src={show.imageUrl} />
-                <div className="showInfo">
-                  <p>
-                    Rating: <span>{show.rating}/10</span>
-                  </p>
-                  <p>
-                    Episode:{' '}
-                    <span>{`${show.currentEp}/${show.episodeTotal}`}</span>
-                  </p>
-                  <p>Language: {show.language}</p>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <h4>Why not add some shows.....</h4>
-        )}
-      </div>
-      {/* <i class="bi bi-alarm"></i> */}
-
-      <div id="allSongs">
-        <h2>All Songs</h2>
-        <table>
-          <thead>
-            <tr>
-              <th />
-              <th>#</th>
-              <th>Title</th>
-              <th>Artist</th>
-              <th>Fav</th>
-            </tr>
-          </thead>
-          <tbody>
-            {songs.map((song, index) => {
-              return (
-                <tr key={song.id}>
-                  <td>
-                    <i className="fa fa-play-circle" />
-                  </td>
-                  <td className="songNum">{index + 1}</td>
-                  <td>{song.title}</td>
-                  <td>{song.artists[0].name}</td>
-                  <td>{song.isFav}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <div>Welcome, {username}</div>
+      <Carousel indicators={false}>
+        {shows.map((show) => (
+          <Carousel.Item interval={5000} key={show.id} className="showCarousel">
+            <img src={show.imageUrl} className="carouselImg" alt={show.title} />
+            <Carousel.Caption className="caption">
+              <h3>{show.title}</h3>
+              <p>{` Progress: ${show.currentEp}/${show.episodeTotal}`}</p>
+              <p>{`Rating: ${show.rating}/10`}</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+        ))}
+        {/* <Carousel.Item interval={5000}>
+          <img
+            className="d-block w-100"
+            src="/first-slide.png"
+            alt="First slide"
+          />
+          <Carousel.Caption>
+            <h3>First slide label</h3>
+            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item interval={5000}>
+          <img
+            className="d-block w-100"
+            src="/second-slide.png"
+            alt="Second slide"
+          />
+          <Carousel.Caption>
+            <h3>Second slide label</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item interval={5000}>
+          <img
+            className="d-block w-100"
+            src="/third-slide.png"
+            alt="Third slide"
+          />
+          <Carousel.Caption>
+            <h3>Third slide label</h3>
+            <p>
+              Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+            </p>
+          </Carousel.Caption>
+        </Carousel.Item> */}
+      </Carousel>
     </div>
   );
 };
 
-/**
- * CONTAINER
- */
-const mapState = (state) => {
-  return {
-    username: state.auth.username,
-    auth: state.auth,
-  };
-};
-
-export default connect(mapState)(HomePage);
+export default HomePage;

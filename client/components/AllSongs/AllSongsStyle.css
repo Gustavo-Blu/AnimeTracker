@@ -1,0 +1,37 @@
+.songTable {
+  /* border-collapse: collapse; */
+  border: 2px solid black;
+  width: 100%;
+  /* margin-left: 5%; */
+}
+
+td {
+  border-bottom: 1px solid gray;
+  padding: 10px;
+}
+
+.header {
+  background-color: gray;
+}
+
+.icons {
+  color: gold;
+}
+
+/* #allSongs {
+  margin-top: 50px;
+}
+
+.songNum {
+  text-align: center;
+}
+
+
+
+#allSongs h2 {
+  flex: 0 0 100%;
+}
+
+.song img {
+  max-height: 346px;
+} */
